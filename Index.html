@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePay | Payment Processing for Collections</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --huntington-green: #007850;
+            --huntington-dark-green: #005b3c;
+            --huntington-blue: #005eb8;
+            --huntington-dark-blue: #004c8f;
+            --huntington-gray: #6e7c87;
+            --huntington-light-gray: #f3f5f7;
+            --huntington-white: #ffffff;
+            --huntington-black: #2d2d2d;
+            --huntington-accent: #ff671f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--huntington-light-gray);
+            color: var(--huntington-black);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--huntington-green) 0%, var(--huntington-dark-green) 100%);
+            color: var(--huntington-white);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--huntington-accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: var(--huntington-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--huntington-accent);
+        }
+        
+        .hero {
+            padding: 3rem 0;
+            text-align: center;
+            background: var(--huntington-white);
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--huntington-green);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--huntington-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .payment-form-container {
+            flex: 1;
+            background: var(--huntington-white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-form-container h2 {
+            color: var(--huntington-green);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--huntington-light-gray);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--huntington-black);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--huntington-blue);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .payment-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--huntington-blue);
+        }
+        
+        .payment-option.active {
+            border-color: var(--huntington-blue);
+            background-color: rgba(0, 94, 184, 0.1);
+        }
+        
+        .payment-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--huntington-gray);
+        }
+        
+        .payment-option.active i {
+            color: var(--huntington-blue);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--huntington-green);
+            color: var(--huntington-white);
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--huntington-dark-green);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .info-sidebar {
+            width: 300px;
+            background: var(--huntington-white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-sidebar h3 {
+            color: var(--huntington-green);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--huntington-light-gray);
+        }
+        
+        .payment-details {
+            margin-bottom: 2rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--huntington-green);
+        }
+        
+        .security-note {
+            background-color: rgba(0, 94, 184, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .security-note i {
+            color: var(--huntington-blue);
+            margin-right: 0.5rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: var(--huntington-white);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--huntington-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            color: var(--huntington-green);
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background-color: var(--huntington-dark-green);
+            color: var(--huntington-white);
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--huntington-white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--huntington-accent);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .info-sidebar {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .payment-options {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-lock"></i>
+                <span>SecurePay</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Make Payment</a></li>
+                    <li><a href="#">Payment History</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Secure Payment Processing</h1>
+            <p>Easily and securely settle your outstanding balances with our encrypted payment system</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="payment-form-container">
+                <h2>Payment Information</h2>
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="account-number">Account Number</label>
+                        <input type="text" id="account-number" class="form-control" placeholder="Enter your account number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Payment Amount ($)</label>
+                        <input type="number" id="amount" class="form-control" placeholder="Enter amount" min="1" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <div class="payment-options">
+                            <div class="payment-option active" data-method="card">
+                                <i class="fas fa-credit-card"></i>
+                                <div>Credit Card</div>
+                            </div>
+                            <div class="payment-option" data-method="bank">
+                                <i class="fas fa-university"></i>
+                                <div>Bank Transfer</div>
+                            </div>
+                            <div class="payment-option" data-method="paypal">
+                                <i class="fab fa-paypal"></i>
+                                <div>PayPal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry">Expiry Date</label>
+                            <input type="text" id="expiry" class="form-control" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" class="form-control" placeholder="XXX" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">Cardholder Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="As shown on card" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-block">Submit Payment</button>
+                </form>
+            </div>
+            
+            <div class="info-sidebar">
+                <h3>Payment Summary</h3>
+                <div class="payment-details">
+                    <div class="detail-item">
+                        <span>Original Balance:</span>
+                        <span>$1,250.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Previous Payments:</span>
+                        <span>-$250.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Interest/Fees:</span>
+                        <span>$25.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Current Balance:</span>
+                        <span>$1,025.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Payment Amount:</span>
+                        <span id="payment-amount">$0.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Remaining Balance:</span>
+                        <span id="remaining-balance">$1,025.00</span>
+                    </div>
+                </div>
+                
+                <div class="security-note">
+                    <p><i class="fas fa-shield-alt"></i> Your payment information is encrypted and secure. We use industry-standard SSL encryption to protect your data.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-lock"></i>
+                <h3>Secure Encryption</h3>
+                <p>All transactions are protected with bank-level security encryption</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Instant Processing</h3>
+                <p>Payments are processed immediately and reflected in your account</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-receipt"></i>
+                <h3>Payment Confirmation</h3>
+                <p>Receive immediate confirmation and receipt for all transactions</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Our support team is available around the clock to assist you</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <i class="fas fa-lock"></i>
+                    <span>SecurePay</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Security</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 SecurePay. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Payment method selection
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                paymentOptions.forEach(op => op.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+        
+        // Update payment amount and remaining balance
+        const amountInput = document.getElementById('amount');
+        const paymentAmount = document.getElementById('payment-amount');
+        const remainingBalance = document.getElementById('remaining-balance');
+        const currentBalance = 1025.00;
+        
+        amountInput.addEventListener('input', () => {
+            const amount = parseFloat(amountInput.value) || 0;
+            paymentAmount.textContent = `$${amount.toFixed(2)}`;
+            remainingBalance.textContent = `$${(currentBalance - amount).toFixed(2)}`;
+        });
+        
+        // Form submission
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Payment processed successfully! Thank you for your payment.');
+            this.reset();
+            paymentAmount.textContent = '$0.00';
+            remainingBalance.textContent = `$${currentBalance.toFixed(2)}`;
+        });
+        
+        // Format card number input
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 16) value = value.slice(0, 16);
+            
+            // Format with spaces every 4 characters
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                formattedValue += value[i];
+            }
+            
+            e.target.value = formattedValue;
+        });
+        
+        // Format expiry date input
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 4) value = value.slice(0, 4);
+            
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
